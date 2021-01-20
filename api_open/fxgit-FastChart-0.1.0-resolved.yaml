@@ -1,0 +1,214 @@
+---
+openapi: 3.0.0
+info:
+  title: FastChart API
+  description: stock chart as a service
+  contact:
+    name: dennislwm
+    url: https://github.com/dennislwm
+  version: 0.1.0
+servers:
+- url: https://fastchart.myvnc.com/v1
+  description: Dev Server
+paths:
+  /symbol/{id}:
+    get:
+      description: Get chart of symbol
+      parameters:
+      - name: id
+        in: path
+        description: The symbol code
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/InpSymbol'
+      - name: daterel
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDaterel'
+      - name: datelen
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDatelen'
+      - name: datestart
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDatestart'
+      - name: dateend
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDateend'
+      - name: ta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpTa'
+      - name: period
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpTaPeriod'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetChart'
+  /symbol/{id}/sub/{sub}:
+    get:
+      description: Get chart of symbol with sub indicator
+      parameters:
+      - name: id
+        in: path
+        description: The symbol code
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/InpSymbol'
+      - name: sub
+        in: path
+        description: The name of indicator
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/InpSub'
+      - name: subperiod
+        in: query
+        description: The period of indicator
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpSubperiod'
+      - name: daterel
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDaterel'
+      - name: datelen
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDatelen'
+      - name: datestart
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDatestart'
+      - name: dateend
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpDateend'
+      - name: ta
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpTa'
+      - name: period
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          $ref: '#/components/schemas/InpTaPeriod'
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetChart'
+components:
+  schemas:
+    InpSymbol:
+      maximum: 8
+      minimum: 3
+      type: string
+      description: Symbol
+      example: SPY
+    InpTa:
+      type: string
+      description: Indicator name on main chart
+      default: SMA
+      enum:
+      - SMA
+      - EMA
+    InpTaPeriod:
+      minimum: 2
+      type: integer
+      description: Ta Period
+      default: 20
+    InpSub:
+      type: string
+      description: Indicator name on sub chart
+      default: RSI
+      enum:
+      - RSI
+    InpSubperiod:
+      minimum: 2
+      type: integer
+      description: Sub Period
+      default: 14
+    InpDaterel:
+      type: string
+      description: Relative date
+      default: "Y"
+      enum:
+      - YTM
+      - M
+      - YTQ
+      - Q
+      - YTD
+      - "Y"
+    InpDatelen:
+      type: integer
+      description: Relative date length
+      default: 1
+    InpDatestart:
+      type: string
+      description: The start date. Must be used with end date.
+      format: date
+    InpDateend:
+      type: string
+      description: The end date. Must be used with start date.
+      format: date
+    RetChart:
+      properties:
+        id:
+          type: string
+          example: SPY
+        url:
+          type: string
+          example: https://fastchart.myvnc.com/img/SPY.png
+      description: Response Chart

@@ -1,0 +1,98 @@
+---
+openapi: 3.0.0
+info:
+  title: FastChart API
+  description: stock chart as a service
+  contact:
+    name: dennislwm
+    url: https://github.com/dennislwm
+  version: 0.2.0
+servers:
+- url: https://fastchart.myvnc.com/0.2
+  description: Dev Server
+paths:
+  /{symbol}:
+    get:
+      summary: Fastchart is an alternative to TradingView
+      parameters:
+      - name: symbol
+        in: path
+        description: symbol of price chart to get
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: main
+        in: query
+        description: add a main indicator (remove hyphenated values to use default inputs)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: sub
+        in: query
+        description: add a subwindow indicator (remove hyphenated values to use default inputs)
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A PNG file that contains the price chart of symbol.
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: The specified resource was a bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/schError'
+        "404":
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/schError'
+        default:
+          description: There was an unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/schError'
+components:
+  schemas:
+    schError:
+      required:
+      - code
+      - message
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+  responses:
+    resBadRequest400:
+      description: The specified resource was a bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/schError'
+    resNotFound404:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/schError'
+    resUnexpected:
+      description: There was an unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/schError'
